@@ -1,0 +1,5 @@
+- "Stock" / "inventory" / "on hand" for a product = total purchased quantity minus total sold quantity.
+- purchases = stock coming IN (restocking); sales = stock going OUT. Quantities are units, not money.
+- This database has no prices or dates, so revenue/profit/time-based questions cannot be answered: say so in "clarification".
+- Aggregate purchases and sales in separate subqueries before joining to products (avoids double counting).
+- "Best selling" means the highest total quantity sold, unless the user says otherwise.

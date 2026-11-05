@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "difficulty": "easy",
+    "question": "How many records are there in total?",
+    "gold_sql": "SELECT COUNT(*) FROM retail_inventory"
+  },
+  {
+    "id": 2,
+    "difficulty": "easy",
+    "question": "How many stores are there?",
+    "gold_sql": "SELECT COUNT(DISTINCT store_id) FROM retail_inventory"
+  },
+  {
+    "id": 3,
+    "difficulty": "easy",
+    "question": "How many distinct products are there?",
+    "gold_sql": "SELECT COUNT(DISTINCT product_id) FROM retail_inventory"
+  },
+  {
+    "id": 4,
+    "difficulty": "easy",
+    "question": "List all product categories.",
+    "gold_sql": "SELECT DISTINCT category FROM retail_inventory"
+  },
+  {
+    "id": 5,
+    "difficulty": "easy",
+    "question": "What is the date range of the data?",
+    "gold_sql": "SELECT MIN(date), MAX(date) FROM retail_inventory"
+  },
+  {
+    "id": 6,
+    "difficulty": "easy",
+    "question": "What is the total number of units sold?",
+    "gold_sql": "SELECT SUM(units_sold) FROM retail_inventory"
+  },
+  {
+    "id": 7,
+    "difficulty": "easy",
+    "question": "What is the average price?",
+    "gold_sql": "SELECT AVG(price) FROM retail_inventory"
+  },
+  {
+    "id": 8,
+    "difficulty": "easy",
+    "question": "How many records were on a holiday or promotion?",
+    "gold_sql": "SELECT COUNT(*) FROM retail_inventory WHERE is_holiday_promotion = 1"
+  },
+  {
+    "id": 9,
+    "difficulty": "easy",
+    "question": "How many records have Snowy weather?",
+    "gold_sql": "SELECT COUNT(*) FROM retail_inventory WHERE weather_condition = 'Snowy'"
+  },
+  {
+    "id": 10,
+    "difficulty": "medium",
+    "question": "Total units sold per category.",
+    "gold_sql": "SELECT category, SUM(units_sold) FROM retail_inventory GROUP BY category"
+  },
+  {
+    "id": 11,
+    "difficulty": "medium",
+    "question": "Total units sold per store, highest first.",
+    "gold_sql": "SELECT store_id, SUM(units_sold) AS u FROM retail_inventory GROUP BY store_id ORDER BY u DESC"
+  },
+  {
+    "id": 12,
+    "difficulty": "medium",
+    "question": "Top 5 products by total units sold.",
+    "gold_sql": "SELECT product_id, SUM(units_sold) AS u FROM retail_inventory GROUP BY product_id ORDER BY u DESC LIMIT 5"
+  },
+  {
+    "id": 13,
+    "difficulty": "medium",
+    "question": "Average inventory level by region.",
+    "gold_sql": "SELECT region, AVG(inventory_level) FROM retail_inventory GROUP BY region"
+  },
+  {
+    "id": 14,
+    "difficulty": "medium",
+    "question": "Total revenue (after discount) in 2023.",
+    "gold_sql": "SELECT SUM(units_sold * price * (1 - discount_pct / 100.0)) FROM retail_inventory WHERE strftime('%Y', date) = '2023'"
+  },
+  {
+    "id": 15,
+    "difficulty": "medium",
+    "question": "Monthly units sold in 2022.",
+    "gold_sql": "SELECT strftime('%Y-%m', date) AS m, SUM(units_sold) FROM retail_inventory WHERE strftime('%Y', date) = '2022' GROUP BY m ORDER BY m"
+  },
+  {
+    "id": 16,
+    "difficulty": "medium",
+    "question": "Average units sold on promotion days versus non-promotion days.",
+    "gold_sql": "SELECT is_holiday_promotion, AVG(units_sold) FROM retail_inventory GROUP BY is_holiday_promotion"
+  },
+  {
+    "id": 17,
+    "difficulty": "medium",
+    "question": "Total units sold by weather condition.",
+    "gold_sql": "SELECT weather_condition, SUM(units_sold) FROM retail_inventory GROUP BY weather_condition"
+  },
+  {
+    "id": 18,
+    "difficulty": "medium",
+    "question": "Which season has the highest average units sold?",
+    "gold_sql": "SELECT seasonality, AVG(units_sold) AS a FROM retail_inventory GROUP BY seasonality ORDER BY a DESC LIMIT 1"
+  },
+  {
+    "id": 19,
+    "difficulty": "medium",
+    "question": "How many records have inventory level below 100?",
+    "gold_sql": "SELECT COUNT(*) FROM retail_inventory WHERE inventory_level < 100"
+  },
+  {
+    "id": 20,
+    "difficulty": "medium",
+    "question": "What was the total units ordered in Q4 of 2023?",
+    "gold_sql": "SELECT SUM(units_ordered) FROM retail_inventory WHERE strftime('%Y', date) = '2023' AND strftime('%m', date) IN ('10','11','12')"
+  },
+  {
+    "id": 21,
+    "difficulty": "medium",
+    "question": "How many days was our price higher than the competitor price, per category?",
+    "gold_sql": "SELECT category, COUNT(*) FROM retail_inventory WHERE price > competitor_price GROUP BY category"
+  },
+  {
+    "id": 22,
+    "difficulty": "hard",
+    "question": "Revenue after discount per category, highest first.",
+    "gold_sql": "SELECT category, SUM(units_sold * price * (1 - discount_pct / 100.0)) AS r FROM retail_inventory GROUP BY category ORDER BY r DESC"
+  },
+  {
+    "id": 23,
+    "difficulty": "hard",
+    "question": "Which store and category combination sold the most units?",
+    "gold_sql": "SELECT store_id, category, SUM(units_sold) AS u FROM retail_inventory GROUP BY store_id, category ORDER BY u DESC LIMIT 1"
+  },
+  {
+    "id": 24,
+    "difficulty": "hard",
+    "question": "Mean absolute error of the demand forecast versus actual units sold, per category.",
+    "gold_sql": "SELECT category, AVG(ABS(demand_forecast - units_sold)) FROM retail_inventory GROUP BY category"
+  },
+  {
+    "id": 25,
+    "difficulty": "hard",
+    "question": "For each year, which category had the highest revenue after discount?",
+    "gold_sql": "SELECT y, category, r FROM (SELECT strftime('%Y', date) AS y, category, SUM(units_sold * price * (1 - discount_pct / 100.0)) AS r, ROW_NUMBER() OVER (PARTITION BY strftime('%Y', date) ORDER BY SUM(units_sold * price * (1 - discount_pct / 100.0)) DESC) AS rn FROM retail_inventory GROUP BY y, category) WHERE rn = 1"
+  },
+  {
+    "id": 26,
+    "difficulty": "hard",
+    "question": "Month-over-month change in total units sold for 2023.",
+    "gold_sql": "SELECT m, u, u - LAG(u) OVER (ORDER BY m) AS change FROM (SELECT strftime('%Y-%m', date) AS m, SUM(units_sold) AS u FROM retail_inventory WHERE strftime('%Y', date) = '2023' GROUP BY m)"
+  },
+  {
+    "id": 27,
+    "difficulty": "hard",
+    "question": "Products whose average units sold on promotion days is more than 10% higher than on non-promotion days.",
+    "gold_sql": "SELECT product_id FROM retail_inventory GROUP BY product_id HAVING AVG(CASE WHEN is_holiday_promotion = 1 THEN units_sold END) > 1.1 * AVG(CASE WHEN is_holiday_promotion = 0 THEN units_sold END)"
+  },
+  {
+    "id": 28,
+    "difficulty": "hard",
+    "question": "On the most recent date, which product at each store has the lowest inventory level?",
+    "gold_sql": "SELECT store_id, product_id, inventory_level FROM (SELECT store_id, product_id, inventory_level, ROW_NUMBER() OVER (PARTITION BY store_id ORDER BY inventory_level, product_id) rn FROM retail_inventory WHERE date = (SELECT MAX(date) FROM retail_inventory)) WHERE rn = 1"
+  },
+  {
+    "id": 29,
+    "difficulty": "hard",
+    "question": "What percentage of records have units sold above the demand forecast?",
+    "gold_sql": "SELECT 100.0 * SUM(units_sold > demand_forecast) / COUNT(*) FROM retail_inventory"
+  },
+  {
+    "id": 30,
+    "difficulty": "hard",
+    "question": "Average discount percentage by category, only for categories where it is above the overall average.",
+    "gold_sql": "SELECT category, AVG(discount_pct) AS a FROM retail_inventory GROUP BY category HAVING a > (SELECT AVG(discount_pct) FROM retail_inventory)"
+  }
+]

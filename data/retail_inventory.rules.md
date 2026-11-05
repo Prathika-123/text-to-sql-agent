@@ -1,0 +1,12 @@
+- The only table is retail_inventory. One row = one product in one store on one day (5 stores S001-S005, 20 products P0001-P0020, 2022-01-01 to 2024-01-01, ~73,100 rows). There are no separate product/store tables.
+- IMPORTANT: category and region are attributes of each ROW, not of a product or store. The same product_id appears under several categories and the same store_id under several regions. Never assume product -> category or store -> region is one-to-one; group by the column the user asks about. There are no product names, only product_id.
+- Dates are ISO text (YYYY-MM-DD): use strftime('%Y', date), strftime('%Y-%m', date), strftime('%m', date). Quarters: Q1=months 01-03, Q2=04-06, Q3=07-09, Q4=10-12.
+- The seasonality column (Spring/Summer/Autumn/Winter) is a label stored on each row and does NOT follow the calendar month. When the user says "season", use the seasonality column; when they say a month or quarter, use date.
+- Column meanings: inventory_level = units in stock that day; units_sold = units sold that day; units_ordered = units reordered from suppliers that day; demand_forecast = predicted demand (can be negative: a data quirk, mention it if relevant); price = selling price per unit; discount_pct = percent discount (0, 5, 10, 15 or 20); competitor_price = competitor's price for the same item; is_holiday_promotion = 1 if a holiday/promotion day else 0; weather_condition = Sunny/Rainy/Cloudy/Snowy.
+- Revenue = SUM(units_sold * price * (1 - discount_pct / 100.0)). "Gross sales" or "sales value before discount" = SUM(units_sold * price). If the user says "sales" without specifying, say "units sold" for quantities and revenue for money, and state which you used in assumptions.
+- "Stockout risk" / "low stock" = rows where inventory_level is low (e.g. < 100) unless the user gives a threshold. "Overstock" = high inventory_level relative to units_sold.
+- Forecast accuracy: compare demand_forecast to units_sold, e.g. AVG(ABS(demand_forecast - units_sold)).
+- Price comparison to competitors: price - competitor_price (positive = we are more expensive).
+- Inventory level is a daily snapshot: do NOT SUM it across days for "total inventory". Use AVG over time, or the value on the latest date (MAX(date)), and state which one you used.
+- "Latest" or "most recent" = date = (SELECT MAX(date) FROM retail_inventory).
+- Round money and averages to 2 decimals with ROUND(x, 2).

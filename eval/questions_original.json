@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "difficulty": "easy",
+    "question": "How many products are there?",
+    "gold_sql": "SELECT COUNT(*) FROM products"
+  },
+  {
+    "id": 2,
+    "difficulty": "easy",
+    "question": "List all product names with their category.",
+    "gold_sql": "SELECT name, category FROM products"
+  },
+  {
+    "id": 3,
+    "difficulty": "easy",
+    "question": "How many purchase records exist?",
+    "gold_sql": "SELECT COUNT(*) FROM purchases"
+  },
+  {
+    "id": 4,
+    "difficulty": "medium",
+    "question": "Total quantity purchased per product name.",
+    "gold_sql": "SELECT p.name, SUM(pu.quantity) FROM purchases pu JOIN products p ON p.id=pu.product_id GROUP BY p.id"
+  },
+  {
+    "id": 5,
+    "difficulty": "medium",
+    "question": "Which products have never been sold?",
+    "gold_sql": "SELECT p.name FROM products p WHERE NOT EXISTS (SELECT 1 FROM sales s WHERE s.product_id=p.id)"
+  },
+  {
+    "id": 6,
+    "difficulty": "medium",
+    "question": "What is the best selling product by quantity?",
+    "gold_sql": "SELECT p.name FROM sales s JOIN products p ON p.id=s.product_id GROUP BY p.id ORDER BY SUM(s.quantity) DESC LIMIT 1"
+  },
+  {
+    "id": 7,
+    "difficulty": "hard",
+    "question": "Current stock of each product.",
+    "gold_sql": "SELECT p.name, COALESCE(b.bought,0)-COALESCE(s.sold,0) AS stock FROM products p LEFT JOIN (SELECT product_id, SUM(quantity) AS bought FROM purchases GROUP BY product_id) b ON b.product_id=p.id LEFT JOIN (SELECT product_id, SUM(quantity) AS sold FROM sales GROUP BY product_id) s ON s.product_id=p.id"
+  },
+  {
+    "id": 8,
+    "difficulty": "hard",
+    "question": "Which product has the most stock left?",
+    "gold_sql": "SELECT p.name, COALESCE(b.bought,0)-COALESCE(s.sold,0) AS stock FROM products p LEFT JOIN (SELECT product_id, SUM(quantity) AS bought FROM purchases GROUP BY product_id) b ON b.product_id=p.id LEFT JOIN (SELECT product_id, SUM(quantity) AS sold FROM sales GROUP BY product_id) s ON s.product_id=p.id ORDER BY stock DESC LIMIT 1"
+  }
+]

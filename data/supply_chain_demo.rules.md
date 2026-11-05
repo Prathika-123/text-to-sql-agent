@@ -1,0 +1,6 @@
+- "Stock" / "inventory" / "on hand" for a product = total purchased quantity minus total sold quantity.
+- purchases = stock coming IN (restocking); sales = stock going OUT. Quantities are units.
+- Revenue = SUM(sales.quantity * products.unit_price). Cost of goods sold = SUM(sales.quantity * products.unit_cost). Profit = revenue - cost of goods sold. Margin % = (unit_price - unit_cost) / unit_price * 100.
+- Dates are ISO text (YYYY-MM-DD): use strftime('%Y', sale_date), strftime('%Y-%m', sale_date) etc. Data spans 2025-01-01 to 2026-10-31. Quarters: Q1=months 01-03, Q2=04-06, Q3=07-09, Q4=10-12.
+- Aggregate purchases and sales in separate subqueries before joining (avoids double counting).
+- "Best selling" means highest total quantity sold, unless the question mentions revenue or profit.

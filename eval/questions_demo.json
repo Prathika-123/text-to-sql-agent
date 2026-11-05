@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "difficulty": "easy",
+    "question": "How many products do we have?",
+    "gold_sql": "SELECT COUNT(*) FROM products"
+  },
+  {
+    "id": 2,
+    "difficulty": "easy",
+    "question": "List all suppliers and their countries.",
+    "gold_sql": "SELECT name, country FROM suppliers"
+  },
+  {
+    "id": 3,
+    "difficulty": "easy",
+    "question": "How many products are in each category?",
+    "gold_sql": "SELECT category, COUNT(*) FROM products GROUP BY category"
+  },
+  {
+    "id": 4,
+    "difficulty": "easy",
+    "question": "How many sales transactions are there?",
+    "gold_sql": "SELECT COUNT(*) FROM sales"
+  },
+  {
+    "id": 5,
+    "difficulty": "easy",
+    "question": "What is the most expensive product?",
+    "gold_sql": "SELECT name, unit_price FROM products ORDER BY unit_price DESC LIMIT 1"
+  },
+  {
+    "id": 6,
+    "difficulty": "easy",
+    "question": "Which suppliers are based in China?",
+    "gold_sql": "SELECT name FROM suppliers WHERE country='China'"
+  },
+  {
+    "id": 7,
+    "difficulty": "easy",
+    "question": "What is the average unit price of Electronics products?",
+    "gold_sql": "SELECT AVG(unit_price) FROM products WHERE category='Electronics'"
+  },
+  {
+    "id": 8,
+    "difficulty": "easy",
+    "question": "Show all products supplied by Nordic Textiles.",
+    "gold_sql": "SELECT p.name FROM products p JOIN suppliers s ON s.id=p.supplier_id WHERE s.name='Nordic Textiles'"
+  },
+  {
+    "id": 9,
+    "difficulty": "medium",
+    "question": "Top 5 products by total units sold.",
+    "gold_sql": "SELECT p.name, SUM(s.quantity) AS units FROM sales s JOIN products p ON p.id=s.product_id GROUP BY p.id ORDER BY units DESC LIMIT 5"
+  },
+  {
+    "id": 10,
+    "difficulty": "medium",
+    "question": "Which category sold the most units?",
+    "gold_sql": "SELECT p.category, SUM(s.quantity) AS units FROM sales s JOIN products p ON p.id=s.product_id GROUP BY p.category ORDER BY units DESC LIMIT 1"
+  },
+  {
+    "id": 11,
+    "difficulty": "medium",
+    "question": "Total units sold in 2025.",
+    "gold_sql": "SELECT SUM(quantity) FROM sales WHERE strftime('%Y',sale_date)='2025'"
+  },
+  {
+    "id": 12,
+    "difficulty": "medium",
+    "question": "Total revenue per category.",
+    "gold_sql": "SELECT p.category, SUM(s.quantity*p.unit_price) FROM sales s JOIN products p ON p.id=s.product_id GROUP BY p.category"
+  },
+  {
+    "id": 13,
+    "difficulty": "medium",
+    "question": "Which products have never been sold?",
+    "gold_sql": "SELECT p.name FROM products p WHERE NOT EXISTS (SELECT 1 FROM sales s WHERE s.product_id=p.id)"
+  },
+  {
+    "id": 14,
+    "difficulty": "medium",
+    "question": "How many units did we purchase in total for each supplier?",
+    "gold_sql": "SELECT su.name, SUM(pu.quantity) FROM purchases pu JOIN products p ON p.id=pu.product_id JOIN suppliers su ON su.id=p.supplier_id GROUP BY su.id"
+  },
+  {
+    "id": 15,
+    "difficulty": "medium",
+    "question": "What is the profit margin percentage of each product? Highest first.",
+    "gold_sql": "SELECT name, (unit_price-unit_cost)*100.0/unit_price AS margin FROM products ORDER BY margin DESC"
+  },
+  {
+    "id": 16,
+    "difficulty": "medium",
+    "question": "Monthly units sold in 2026.",
+    "gold_sql": "SELECT strftime('%Y-%m',sale_date) AS month, SUM(quantity) FROM sales WHERE strftime('%Y',sale_date)='2026' GROUP BY month ORDER BY month"
+  },
+  {
+    "id": 17,
+    "difficulty": "medium",
+    "question": "Which suppliers supply more than 5 products?",
+    "gold_sql": "SELECT su.name FROM suppliers su JOIN products p ON p.supplier_id=su.id GROUP BY su.id HAVING COUNT(*)>5"
+  },
+  {
+    "id": 18,
+    "difficulty": "medium",
+    "question": "How many units of Laptop were sold?",
+    "gold_sql": "SELECT SUM(s.quantity) FROM sales s JOIN products p ON p.id=s.product_id WHERE p.name='Laptop'"
+  },
+  {
+    "id": 19,
+    "difficulty": "hard",
+    "question": "What is the current stock of each product?",
+    "gold_sql": "SELECT p.name, COALESCE(b.bought,0)-COALESCE(s.sold,0) AS stock FROM products p LEFT JOIN (SELECT product_id, SUM(quantity) AS bought FROM purchases GROUP BY product_id) b ON b.product_id=p.id LEFT JOIN (SELECT product_id, SUM(quantity) AS sold FROM sales GROUP BY product_id) s ON s.product_id=p.id"
+  },
+  {
+    "id": 20,
+    "difficulty": "hard",
+    "question": "Which products have negative stock (sold more than purchased)?",
+    "gold_sql": "SELECT p.name, COALESCE(b.bought,0)-COALESCE(s.sold,0) AS stock FROM products p LEFT JOIN (SELECT product_id, SUM(quantity) AS bought FROM purchases GROUP BY product_id) b ON b.product_id=p.id LEFT JOIN (SELECT product_id, SUM(quantity) AS sold FROM sales GROUP BY product_id) s ON s.product_id=p.id WHERE COALESCE(b.bought,0)-COALESCE(s.sold,0) < 0"
+  },
+  {
+    "id": 21,
+    "difficulty": "hard",
+    "question": "Which 3 products have the highest stock?",
+    "gold_sql": "SELECT p.name, COALESCE(b.bought,0)-COALESCE(s.sold,0) AS stock FROM products p LEFT JOIN (SELECT product_id, SUM(quantity) AS bought FROM purchases GROUP BY product_id) b ON b.product_id=p.id LEFT JOIN (SELECT product_id, SUM(quantity) AS sold FROM sales GROUP BY product_id) s ON s.product_id=p.id ORDER BY stock DESC LIMIT 3"
+  },
+  {
+    "id": 22,
+    "difficulty": "hard",
+    "question": "Total profit (revenue minus cost of goods sold) per category, highest first.",
+    "gold_sql": "SELECT p.category, SUM(s.quantity*(p.unit_price-p.unit_cost)) AS profit FROM sales s JOIN products p ON p.id=s.product_id GROUP BY p.category ORDER BY profit DESC"
+  },
+  {
+    "id": 23,
+    "difficulty": "hard",
+    "question": "Revenue by quarter for 2025.",
+    "gold_sql": "SELECT 'Q'||((CAST(strftime('%m',sale_date) AS INT)+2)/3) AS q, SUM(s.quantity*p.unit_price) FROM sales s JOIN products p ON p.id=s.product_id WHERE strftime('%Y',sale_date)='2025' GROUP BY q ORDER BY q"
+  },
+  {
+    "id": 24,
+    "difficulty": "hard",
+    "question": "Which supplier's products generated the most revenue?",
+    "gold_sql": "SELECT su.name, SUM(s.quantity*p.unit_price) AS rev FROM sales s JOIN products p ON p.id=s.product_id JOIN suppliers su ON su.id=p.supplier_id GROUP BY su.id ORDER BY rev DESC LIMIT 1"
+  },
+  {
+    "id": 25,
+    "difficulty": "hard",
+    "question": "For each category, how many units were purchased and how many were sold?",
+    "gold_sql": "SELECT p.category, COALESCE(SUM(b.bought),0), COALESCE(SUM(s.sold),0) FROM products p LEFT JOIN (SELECT product_id, SUM(quantity) AS bought FROM purchases GROUP BY product_id) b ON b.product_id=p.id LEFT JOIN (SELECT product_id, SUM(quantity) AS sold FROM sales GROUP BY product_id) s ON s.product_id=p.id GROUP BY p.category"
+  },
+  {
+    "id": 26,
+    "difficulty": "hard",
+    "question": "Products whose total units sold is above the average units sold per product.",
+    "gold_sql": "SELECT p.name FROM products p JOIN (SELECT product_id, SUM(quantity) AS u FROM sales GROUP BY product_id) s ON s.product_id=p.id WHERE s.u > (SELECT AVG(u) FROM (SELECT SUM(quantity) AS u FROM sales GROUP BY product_id))"
+  },
+  {
+    "id": 27,
+    "difficulty": "hard",
+    "question": "In which month of 2025 did we purchase the most units?",
+    "gold_sql": "SELECT strftime('%Y-%m',purchase_date) AS m, SUM(quantity) AS u FROM purchases WHERE strftime('%Y',purchase_date)='2025' GROUP BY m ORDER BY u DESC LIMIT 1"
+  },
+  {
+    "id": 28,
+    "difficulty": "hard",
+    "question": "Which category has the highest average margin percentage?",
+    "gold_sql": "SELECT category, AVG((unit_price-unit_cost)*100.0/unit_price) AS m FROM products GROUP BY category ORDER BY m DESC LIMIT 1"
+  },
+  {
+    "id": 29,
+    "difficulty": "hard",
+    "question": "Which products were sold in both 2025 and 2026?",
+    "gold_sql": "SELECT p.name FROM products p WHERE p.id IN (SELECT product_id FROM sales WHERE strftime('%Y',sale_date)='2025') AND p.id IN (SELECT product_id FROM sales WHERE strftime('%Y',sale_date)='2026')"
+  },
+  {
+    "id": 30,
+    "difficulty": "medium",
+    "question": "How many clothing products are there? (any capitalisation)",
+    "gold_sql": "SELECT COUNT(*) FROM products WHERE LOWER(category)='clothing'"
+  }
+]
